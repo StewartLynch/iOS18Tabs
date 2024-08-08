@@ -35,7 +35,6 @@ struct BooklistView: View {
                             .bold()
                             .background(RoundedRectangle(cornerRadius: 10).fill(book.category.color))
                     }
-                    .draggable(book)
                 }
             }
             .listStyle(.plain)
