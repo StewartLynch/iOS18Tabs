@@ -16,11 +16,17 @@ import SwiftUI
 
 struct StartTabView: View {
     
-    enum Tabs {
-        case home, family, passwords, search, news, notifications
+    enum Tabs: String  {
+        case home, family, passwords, search, news, notifications, vacations, planning, taken, actions
+        
+        var customizationID: String {
+            "com.createchsol.myApp.\(rawValue)"
+        }
     }
     
     @State private var selection: Tabs = .home
+    @AppStorage("TabCustomizations")
+    private var customization: TabViewCustomization
     var body: some View {
         TabView(selection: $selection) {
             Tab("Home", systemImage: "house", value: .home) {
@@ -31,23 +37,29 @@ struct StartTabView: View {
                     }
                 }
             }
+            .customizationID(Tabs.home.customizationID)
+            .customizationBehavior(.disabled, for: .tabBar)
             
             Tab("Family", systemImage: "figure.and.child.holdinghands", value: .family) {
                 Text("Family View")
             }
+            .customizationID(Tabs.family.customizationID)
             
             Tab("Passwords", image: "security", value: .passwords) {
                 Text("My secure passwords")
             }
             .tabPlacement(.sidebarOnly)
+            .customizationID(Tabs.passwords.customizationID)
             
             Tab(value: .search, role: .search) {
                 Text("Search View")
             }
+            .customizationID(Tabs.search.customizationID)
             
             Tab("News", systemImage: "newspaper", value: .news) {
                 Text("News View")
             }
+            .customizationID(Tabs.news.customizationID)
             
             Tab("Notifications", systemImage: "bell", value: .notifications) {
                 VStack {
@@ -58,8 +70,29 @@ struct StartTabView: View {
                 }
             }
             .tabPlacement(.pinned)
+            .customizationID(Tabs.notifications.customizationID)
+            
+            TabSection("Vacations") {
+                Tab("Planned", systemImage: "airplane", value: Tabs.planning) {
+                    Text("Planned Vacations")
+                }
+                .customizationID(Tabs.planning.customizationID)
+                
+                Tab("Taken", systemImage: "checklist", value: .taken) {
+                    Text("Taken Vacations")
+                }
+                .customizationID(Tabs.taken.customizationID)
+            }
+            .customizationID(Tabs.vacations.customizationID)
+            .sectionActions {
+                Button("Reset Tabs", systemImage: "arrow.trianglehead.counterclockwise.90") {
+                    customization.resetSectionOrder()
+                }
+            }
+            .customizationID(Tabs.actions.customizationID)
         }
         .tabViewStyle(.sidebarAdaptable)
+        .tabViewCustomization($customization)
         .tabViewSidebarHeader {
             Label("My Stuff", systemImage: "star")
                 .font(.title)
