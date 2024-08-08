@@ -16,9 +16,11 @@ import SwiftUI
 
 @main
 struct iOS18TabsApp: App {
+    @State private var store = Store()
     var body: some Scene {
         WindowGroup {
             StartTabView()
+                .environment(store)
         }
     }
 }

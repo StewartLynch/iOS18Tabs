@@ -17,7 +17,7 @@ import SwiftUI
 struct StartTabView: View {
     
     enum Tabs: String  {
-        case home, family, passwords, search, news, notifications, vacations, planning, taken, actions
+        case home, family, passwords, search, news, notifications, vacations, planning, taken, actions, books, allbooks, wishlist, reading, completed
         
         var customizationID: String {
             "com.createchsol.myApp.\(rawValue)"
@@ -27,6 +27,7 @@ struct StartTabView: View {
     @State private var selection: Tabs = .home
     @AppStorage("TabCustomizations")
     private var customization: TabViewCustomization
+    @Environment(Store.self) private var store
     var body: some View {
         TabView(selection: $selection) {
             Tab("Home", systemImage: "house", value: .home) {
@@ -84,6 +85,50 @@ struct StartTabView: View {
                 .customizationID(Tabs.taken.customizationID)
             }
             .customizationID(Tabs.vacations.customizationID)
+            
+            TabSection("Books") {
+                Tab("All Books", systemImage: "books.vertical", value: Tabs.allbooks) {
+                    BooklistView(books: store.books, title: "Reading list")
+                }
+                .customizationID(Tabs.allbooks.customizationID)
+                
+                Tab("Wish List", systemImage: "bookmark", value: .wishlist) {
+                    BooklistView(books: store.whishList, title: "Wish List")
+                }
+                .customizationID(Tabs.wishlist.customizationID)
+                .dropDestination(for: Book.self) { books in
+                    books.forEach { book in
+                        if let index = store.books.firstIndex(where: {$0.id == book.id}) {
+                            store.books[index].category = .wishList
+                        }
+                    }
+                }
+                
+                Tab("Reading", systemImage: "book", value: .reading) {
+                    BooklistView(books: store.reading, title: "Currently Reading")
+                }
+                .customizationID(Tabs.reading.customizationID)
+                .dropDestination(for: Book.self) { books in
+                    books.forEach { book in
+                        if let index = store.books.firstIndex(where: {$0.id == book.id}) {
+                            store.books[index].category = .reading
+                        }
+                    }
+                }
+                
+                Tab("Completed", systemImage: "checkmark.shield", value: .completed) {
+                    BooklistView(books: store.completed, title: "Completed")
+                }
+                .customizationID(Tabs.completed.customizationID)
+                .dropDestination(for: Book.self) { books in
+                    books.forEach { book in
+                        if let index = store.books.firstIndex(where: {$0.id == book.id}) {
+                            store.books[index].category = .completed
+                        }
+                    }
+                }
+            }
+            .customizationID(Tabs.books.customizationID)
             .sectionActions {
                 Button("Reset Tabs", systemImage: "arrow.trianglehead.counterclockwise.90") {
                     customization.resetSectionOrder()
@@ -120,4 +165,5 @@ struct StartTabView: View {
 
 #Preview {
     StartTabView()
+        .environment(Store())
 }
