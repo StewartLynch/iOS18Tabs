@@ -39,6 +39,7 @@ struct StartTabView: View {
             Tab("Passwords", image: "security", value: .passwords) {
                 Text("My secure passwords")
             }
+            .tabPlacement(.sidebarOnly)
             
             Tab(value: .search, role: .search) {
                 Text("Search View")
@@ -56,6 +57,30 @@ struct StartTabView: View {
                     }
                 }
             }
+            .tabPlacement(.pinned)
+        }
+        .tabViewStyle(.sidebarAdaptable)
+        .tabViewSidebarHeader {
+            Label("My Stuff", systemImage: "star")
+                .font(.title)
+                .bold()
+                .foregroundStyle(.green)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .tabViewSidebarFooter {
+            Text("Enjoy your stuff")
+        }
+        .tabViewSidebarBottomBar {
+            Button {
+                
+            } label: {
+                Image(systemName: "envelope.fill")
+                    .padding()
+                    .foregroundStyle(.white)
+                    .background(Circle().fill(.blue))
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .trailing)
         }
     }
 }
