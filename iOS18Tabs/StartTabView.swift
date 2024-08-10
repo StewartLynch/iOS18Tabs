@@ -130,7 +130,7 @@ struct StartTabView: View {
             }
             .customizationID(Tabs.books.customizationID)
             .sectionActions {
-                Button("Reset Tabs", systemImage: "arrow.trianglehead.counterclockwise.90") {
+                Button("Reset Tabs", systemImage: "arrow.trianglehead.counterclockwise.rotate.90") {
                     customization.resetSectionOrder()
                 }
             }
